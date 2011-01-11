@@ -52,11 +52,11 @@
 ;;
 ;;   (with-ansi
 ;;    (red "foo")
-;;    (black "bar")
+;;    (black "bar"))
 ;;
 ;;   (with-ansi
 ;;    (on-blue "foo")
-;;    (on-green "bar")
+;;    (on-green "bar"))
 
 
 ;;; Code:
