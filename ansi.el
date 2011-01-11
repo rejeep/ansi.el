@@ -31,6 +31,22 @@
 
 ;;; Commentary:
 
+;; This package defines functions that turn string into ansi colored
+;; strings.
+;;
+;; You can paint string like this (see `ansi-colors' for all possible
+;; colors that text can have).
+;;
+;;   (ansi-red "foo")
+;;   (ansi-black "bar")
+;;
+;; You can also use `with-ansi', which allows for a simplified DSL.
+;;
+;;   (with-ansi
+;;    (red "foo")
+;;    (black "bar"))
+
+
 ;;; Code:
 
 (provide 'ansi)
