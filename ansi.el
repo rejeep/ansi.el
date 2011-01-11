@@ -53,6 +53,71 @@
   (require 'cl))
 
 
+(defconst ansi-colors
+  '((black   . "\e[30m")
+    (red     . "\e[31m")
+    (green   . "\e[32m")
+    (yellow  . "\e[33m")
+    (blue    . "\e[34m")
+    (magenta . "\e[35m")
+    (cyan    . "\e[36m")
+    (white   . "\e[37m"))
+  "List of text colors.")
+
+(defconst ansi-reset "\e[0m"
+  "Ansi code for reset.")
+
+
+(defmacro with-ansi (&rest body)
+  "Allows using shortcut names of coloring functions."
+  `(flet ((<< (colored) (setq result (concat result colored)) colored)
+          (black   (string) (<< (ansi-black string)))
+          (red     (string) (<< (ansi-red string)))
+          (green   (string) (<< (ansi-green string)))
+          (yellow  (string) (<< (ansi-yellow string)))
+          (blue    (string) (<< (ansi-blue string)))
+          (magenta (string) (<< (ansi-magenta string)))
+          (cyan    (string) (<< (ansi-cyan string)))
+          (white   (string) (<< (ansi-white string))))
+     (let (result)
+       ,@body
+       result)))
+
+
+(defun ansi-black (string)
+  (ansi-color string 'black))
+
+(defun ansi-black (string)
+  (ansi-color string 'black))
+
+(defun ansi-red (string)
+  (ansi-color string 'red))
+
+(defun ansi-green (string)
+  (ansi-color string 'green))
+
+(defun ansi-yellow (string)
+  (ansi-color string 'yellow))
+
+(defun ansi-blue (string)
+  (ansi-color string 'blue))
+
+(defun ansi-magenta (string)
+  (ansi-color string 'magenta))
+
+(defun ansi-cyan (string)
+  (ansi-color string 'cyan))
+
+(defun ansi-white (string)
+  (ansi-color string 'white))
+
+
+(defun ansi-color (string color)
+  "Paint STRING with COLOR."
+  (let ((code (cdr (assoc color ansi-colors))))
+    (concat code string ansi-reset)))
+
+
 (provide 'ansi)
 
 ;;; ansi.el ends here
