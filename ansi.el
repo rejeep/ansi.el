@@ -165,7 +165,7 @@
     (format "\e[%sm%s\e[%sm" code string ansi-reset)))
 
 
-;; ON TEXT
+;; COLORS
 
 (defun ansi-black (string)
   (ansi-color string 'black))
