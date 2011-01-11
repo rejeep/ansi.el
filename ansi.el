@@ -72,6 +72,17 @@
 ;;    ;; it conflicts with the builtin function for reversing a
 ;;    ;; list. However, `ansi-reverse' is still available.
 ;;    (contrary "foobar"))
+;;
+;;
+;; If you want to add multiple effects on a single string, you can use
+;; nesting:
+;;
+;;   (ansi-bold
+;;    (ansi-red "foo"))
+;;
+;;   (with-ansi
+;;    (bold
+;;     (red "foo")))
 
 
 ;;; Code:
@@ -120,38 +131,46 @@
 
 (defmacro with-ansi (&rest body)
   "Allows using shortcut names of coloring functions."
-  `(flet ((<< (colored) (setq result (concat result colored)) colored)
+  `(flet ((<<
+           (fn string)
+           (let* ((fn-name
+                   (intern (concat "ansi-" (symbol-name fn))))
+                  (colored (funcall fn-name string)))
+             (when (member fn top)
+               (setq result (concat result colored)))
+             colored))
+
           ;; TEXT COLORS
-          (black   (string) (<< (ansi-black string)))
-          (red     (string) (<< (ansi-red string)))
-          (green   (string) (<< (ansi-green string)))
-          (yellow  (string) (<< (ansi-yellow string)))
-          (blue    (string) (<< (ansi-blue string)))
-          (magenta (string) (<< (ansi-magenta string)))
-          (cyan    (string) (<< (ansi-cyan string)))
-          (white   (string) (<< (ansi-white string)))
+          (black   (string) (<< 'black string))
+          (red     (string) (<< 'red string))
+          (green   (string) (<< 'green string))
+          (yellow  (string) (<< 'yellow string))
+          (blue    (string) (<< 'blue string))
+          (magenta (string) (<< 'magenta string))
+          (cyan    (string) (<< 'cyan string))
+          (white   (string) (<< 'white string))
 
           ;; ON COLORS
-          (on-black   (string) (<< (ansi-on-black string)))
-          (on-red     (string) (<< (ansi-on-red string)))
-          (on-green   (string) (<< (ansi-on-green string)))
-          (on-yellow  (string) (<< (ansi-on-yellow string)))
-          (on-blue    (string) (<< (ansi-on-blue string)))
-          (on-magenta (string) (<< (ansi-on-magenta string)))
-          (on-cyan    (string) (<< (ansi-on-cyan string)))
-          (on-white   (string) (<< (ansi-on-white string)))
+          (on-black   (string) (<< 'on-black string))
+          (on-red     (string) (<< 'on-red string))
+          (on-green   (string) (<< 'on-green string))
+          (on-yellow  (string) (<< 'on-yellow string))
+          (on-blue    (string) (<< 'on-blue string))
+          (on-magenta (string) (<< 'on-magenta string))
+          (on-cyan    (string) (<< 'on-cyan string))
+          (on-white   (string) (<< 'on-white string))
 
           ;; STYLES
-          (bold       (string) (<< (ansi-bold string)))
-          (dark       (string) (<< (ansi-dark string)))
-          (italic     (string) (<< (ansi-italic string)))
-          (underscore (string) (<< (ansi-underscore string)))
-          (blink      (string) (<< (ansi-blink string)))
-          (rapid      (string) (<< (ansi-rapid string)))
-          (contrary   (string) (<< (ansi-contrary string)))
-          (concealed  (string) (<< (ansi-concealed string)))
-          (strike     (string) (<< (ansi-strike string))))
-     (let (result)
+          (bold       (string) (<< 'bold string))
+          (dark       (string) (<< 'dark string))
+          (italic     (string) (<< 'italic string))
+          (underscore (string) (<< 'underscore string))
+          (blink      (string) (<< 'blink string))
+          (rapid      (string) (<< 'rapid string))
+          (contrary   (string) (<< 'contrary string))
+          (concealed  (string) (<< 'concealed string))
+          (strike     (string) (<< 'strike string)))
+     (let ((result) (top (mapcar 'car ',body)))
        ,@body
        result)))
 
