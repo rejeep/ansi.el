@@ -170,9 +170,6 @@
 (defun ansi-black (string)
   (ansi-color string 'black))
 
-(defun ansi-black (string)
-  (ansi-color string 'black))
-
 (defun ansi-red (string)
   (ansi-color string 'red))
 
