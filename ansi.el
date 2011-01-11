@@ -5,7 +5,7 @@
 ;; Author: Johan Andersson <johan.rejeep@gmail.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
 ;; Version: 0.0.1
-;; Keywords: color
+;; Keywords: color, ansi
 ;; URL: http://github.com/rejeep/ansi
 
 ;; This file is NOT part of GNU Emacs.
