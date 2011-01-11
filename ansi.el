@@ -43,9 +43,16 @@
 ;;
 ;; You can paint a string backgrounds (see `ansi-on-colors' for all
 ;; possible background colors).
-;; 
+;;
 ;;   (ansi-on-blue "foo")
 ;;   (ansi-on-green "bar")
+;;
+;;
+;; You can add styles to a string (see `ansi-styles' for all possible
+;; styles).
+;;
+;;   (ansi-bold "foo")
+;;   (ansi-blink "bar")
 ;;
 ;;
 ;; You can use `with-ansi', which allows for a simplified DSL.
@@ -57,6 +64,14 @@
 ;;   (with-ansi
 ;;    (on-blue "foo")
 ;;    (on-green "bar"))
+;;
+;;   (with-ansi
+;;    (bold "foo")
+;;    (blink "bar")
+;;    ;; Note that reverse is not available within `with-ansi' because
+;;    ;; it conflicts with the builtin function for reversing a
+;;    ;; list. However, `ansi-reverse' is still available.
+;;    (contrary "foobar"))
 
 
 ;;; Code:
@@ -87,6 +102,18 @@
     (white   . "\e[47m"))
   "List of colors to draw text on.")
 
+(defconst ansi-styles
+  '((bold       . "\e[1m")
+    (dark       . "\e[2m")
+    (italic     . "\e[3m")
+    (underscore . "\e[4m")
+    (blink      . "\e[5m")
+    (rapid      . "\e[6m")
+    (contrary    . "\e[7m")
+    (concealed  . "\e[8m")
+    (strike     . "\e[9m"))
+  "List of styles.")
+
 (defconst ansi-reset "\e[0m"
   "Ansi code for reset.")
 
@@ -94,7 +121,6 @@
 (defmacro with-ansi (&rest body)
   "Allows using shortcut names of coloring functions."
   `(flet ((<< (colored) (setq result (concat result colored)) colored)
-
           ;; TEXT COLORS
           (black   (string) (<< (ansi-black string)))
           (red     (string) (<< (ansi-red string)))
@@ -113,7 +139,19 @@
           (on-blue    (string) (<< (ansi-on-blue string)))
           (on-magenta (string) (<< (ansi-on-magenta string)))
           (on-cyan    (string) (<< (ansi-on-cyan string)))
-          (on-white   (string) (<< (ansi-on-white string))))
+          (on-white   (string) (<< (ansi-on-white string)))
+
+          ;; STYLES
+          (bold       (string) (<< (ansi-bold string)))
+          (dark       (string) (<< (ansi-dark string)))
+          (italic     (string) (<< (ansi-italic string)))
+          (underscore (string) (<< (ansi-underscore string)))
+          (blink      (string) (<< (ansi-blink string)))
+          (rapid      (string) (<< (ansi-rapid string)))
+          (contrary   (string) (<< (ansi-contrary string)))
+          (concealed  (string) (<< (ansi-concealed string)))
+          (strike     (string) (<< (ansi-strike string)))
+          )
      (let (result)
        ,@body
        result)))
@@ -186,6 +224,42 @@
 (defun ansi-on-color (string color)
   "Paint STRING on COLOR."
   (let ((code (cdr (assoc color ansi-on-colors))))
+    (concat code string ansi-reset)))
+
+
+;; STYLES
+
+(defun ansi-bold (string)
+  (ansi-style string 'bold))
+
+(defun ansi-dark (string)
+  (ansi-style string 'dark))
+
+(defun ansi-italic (string)
+  (ansi-style string 'italic))
+
+(defun ansi-underscore (string)
+  (ansi-style string 'underscore))
+
+(defun ansi-blink (string)
+  (ansi-style string 'blink))
+
+(defun ansi-rapid (string)
+  (ansi-style string 'rapid))
+
+(defun ansi-contrary (string)
+  (ansi-style string 'contrary))
+(defalias 'ansi-reverse 'ansi-contrary)
+
+(defun ansi-concealed (string)
+  (ansi-style string 'concealed))
+
+(defun ansi-strike (string)
+  (ansi-style string 'strike))
+
+(defun ansi-style (string style)
+  "Style STRING with STYLE."
+  (let ((code (cdr (assoc style ansi-styles))))
     (concat code string ansi-reset)))
 
 
