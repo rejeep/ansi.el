@@ -1,4 +1,4 @@
-;;; ansi.el --- Turn string into ansi colored strings
+;;; ansi.el --- Turn string into ansi strings
 
 ;; Copyright (C) 2010 Johan Andersson
 
