@@ -13,6 +13,6 @@
 
 (load (expand-file-name "test-helper.el" ansi-test-path) t t)
 (dolist (test-file (or argv (directory-files ansi-test-path t "-test.el$")))
-  (load-file test-file))
+  (load test-file t t))
 
 (ert-run-tests-batch t)
