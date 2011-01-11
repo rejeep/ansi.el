@@ -49,6 +49,10 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'cl))
+
+
 (provide 'ansi)
 
 ;;; ansi.el ends here
