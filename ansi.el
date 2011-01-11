@@ -103,14 +103,14 @@
   "List of text colors.")
 
 (defconst ansi-on-colors
-  '((black   . 40)
-    (red     . 41)
-    (green   . 42)
-    (yellow  . 43)
-    (blue    . 44)
-    (magenta . 45)
-    (cyan    . 46)
-    (white   . 47))
+  '((on-black   . 40)
+    (on-red     . 41)
+    (on-green   . 42)
+    (on-yellow  . 43)
+    (on-blue    . 44)
+    (on-magenta . 45)
+    (on-cyan    . 46)
+    (on-white   . 47))
   "List of colors to draw text on.")
 
 (defconst ansi-styles
@@ -131,48 +131,16 @@
 
 (defmacro with-ansi (&rest body)
   "Allows using shortcut names of coloring functions."
-  `(flet ((<<
-           (fn string)
-           (let* ((fn-name
-                   (intern (concat "ansi-" (symbol-name fn))))
-                  (colored (funcall fn-name string)))
-             (when (member fn top)
-               (setq result (concat result colored)))
-             colored))
-
-          ;; TEXT COLORS
-          (black   (string) (<< 'black string))
-          (red     (string) (<< 'red string))
-          (green   (string) (<< 'green string))
-          (yellow  (string) (<< 'yellow string))
-          (blue    (string) (<< 'blue string))
-          (magenta (string) (<< 'magenta string))
-          (cyan    (string) (<< 'cyan string))
-          (white   (string) (<< 'white string))
-
-          ;; ON COLORS
-          (on-black   (string) (<< 'on-black string))
-          (on-red     (string) (<< 'on-red string))
-          (on-green   (string) (<< 'on-green string))
-          (on-yellow  (string) (<< 'on-yellow string))
-          (on-blue    (string) (<< 'on-blue string))
-          (on-magenta (string) (<< 'on-magenta string))
-          (on-cyan    (string) (<< 'on-cyan string))
-          (on-white   (string) (<< 'on-white string))
-
-          ;; STYLES
-          (bold       (string) (<< 'bold string))
-          (dark       (string) (<< 'dark string))
-          (italic     (string) (<< 'italic string))
-          (underscore (string) (<< 'underscore string))
-          (blink      (string) (<< 'blink string))
-          (rapid      (string) (<< 'rapid string))
-          (contrary   (string) (<< 'contrary string))
-          (concealed  (string) (<< 'concealed string))
-          (strike     (string) (<< 'strike string)))
-     (let ((result) (top (mapcar 'car ',body)))
-       ,@body
-       result)))
+  `(flet
+       ,(mapcar
+         (lambda (alias)
+           (let ((fn (intern (concat "ansi-" (symbol-name alias)))))
+             `(,alias (string) (,fn string))))
+         (append
+          (mapcar 'car ansi-colors)
+          (mapcar 'car ansi-on-colors)
+          (mapcar 'car ansi-styles)))
+     ,(cons 'concat body)))
 
 
 (defun ansi-color (string color)
@@ -226,31 +194,31 @@
 ;; ON COLORS
 
 (defun ansi-on-black (string)
-  (ansi-on-color string 'black))
+  (ansi-on-color string 'on-black))
 
 (defun ansi-on-black (string)
-  (ansi-on-color string 'black))
+  (ansi-on-color string 'on-black))
 
 (defun ansi-on-red (string)
-  (ansi-on-color string 'red))
+  (ansi-on-color string 'on-red))
 
 (defun ansi-on-green (string)
-  (ansi-on-color string 'green))
+  (ansi-on-color string 'on-green))
 
 (defun ansi-on-yellow (string)
-  (ansi-on-color string 'yellow))
+  (ansi-on-color string 'on-yellow))
 
 (defun ansi-on-blue (string)
-  (ansi-on-color string 'blue))
+  (ansi-on-color string 'on-blue))
 
 (defun ansi-on-magenta (string)
-  (ansi-on-color string 'magenta))
+  (ansi-on-color string 'on-magenta))
 
 (defun ansi-on-cyan (string)
-  (ansi-on-color string 'cyan))
+  (ansi-on-color string 'on-cyan))
 
 (defun ansi-on-white (string)
-  (ansi-on-color string 'white))
+  (ansi-on-color string 'on-white))
 
 
 ;; STYLES
