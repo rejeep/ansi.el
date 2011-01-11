@@ -7,3 +7,14 @@
   (let ((actual (with-ansi (bold (red (blink "string")))))
         (expected "\e[1m\e[31m\e[5mstring\e[0m\e[0m\e[0m"))
     (should (equal actual expected))))
+
+(ert-deftest test-ansi-concat ()
+  (should (equal (ansi-concat "a" "b" "c") "abc"))
+  (should (equal (ansi-concat "a" nil "c") "ac"))
+  (should (equal (ansi-concat "a" 1 "c")   "ac")))
+
+(ert-deftest test-with-ansi-can-handle-different-return-values ()
+  (with-ansi "")
+  (with-ansi nil)
+  (with-ansi 0)
+  (with-ansi '(a)))

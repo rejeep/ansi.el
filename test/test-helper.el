@@ -10,5 +10,4 @@
   "Make sure calling FN will return a CODE ansied string."
   (let* ((actual (funcall fn "string"))
          (expected (format "\e[%smstring\e[0m" code)))
-    (should (equal actual expected))
-    actual))
+    (should (equal actual expected))))

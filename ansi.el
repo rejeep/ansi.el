@@ -140,8 +140,12 @@
           (mapcar 'car ansi-colors)
           (mapcar 'car ansi-on-colors)
           (mapcar 'car ansi-styles)))
-     ,(cons 'concat body)))
+     ,(cons 'ansi-concat body)))
 
+(defun ansi-concat (&rest sequences)
+  "Like `concat' but concats only the string values from SEQUENCES."
+  (let ((strings (remove-if-not 'stringp sequences)))
+    (apply 'concat strings)))
 
 (defun ansi-color (string color)
   "Paint STRING with COLOR."
