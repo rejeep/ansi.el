@@ -109,7 +109,7 @@
     (underscore . "\e[4m")
     (blink      . "\e[5m")
     (rapid      . "\e[6m")
-    (contrary    . "\e[7m")
+    (contrary   . "\e[7m")
     (concealed  . "\e[8m")
     (strike     . "\e[9m"))
   "List of styles.")
