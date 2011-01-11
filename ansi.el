@@ -81,40 +81,40 @@
 
 
 (defconst ansi-colors
-  '((black   . "\e[30m")
-    (red     . "\e[31m")
-    (green   . "\e[32m")
-    (yellow  . "\e[33m")
-    (blue    . "\e[34m")
-    (magenta . "\e[35m")
-    (cyan    . "\e[36m")
-    (white   . "\e[37m"))
+  '((black   . 30)
+    (red     . 31)
+    (green   . 32)
+    (yellow  . 33)
+    (blue    . 34)
+    (magenta . 35)
+    (cyan    . 36)
+    (white   . 37))
   "List of text colors.")
 
 (defconst ansi-on-colors
-  '((black   . "\e[40m")
-    (red     . "\e[41m")
-    (green   . "\e[42m")
-    (yellow  . "\e[43m")
-    (blue    . "\e[44m")
-    (magenta . "\e[45m")
-    (cyan    . "\e[46m")
-    (white   . "\e[47m"))
+  '((black   . 40)
+    (red     . 41)
+    (green   . 42)
+    (yellow  . 43)
+    (blue    . 44)
+    (magenta . 45)
+    (cyan    . 46)
+    (white   . 47))
   "List of colors to draw text on.")
 
 (defconst ansi-styles
-  '((bold       . "\e[1m")
-    (dark       . "\e[2m")
-    (italic     . "\e[3m")
-    (underscore . "\e[4m")
-    (blink      . "\e[5m")
-    (rapid      . "\e[6m")
-    (contrary   . "\e[7m")
-    (concealed  . "\e[8m")
-    (strike     . "\e[9m"))
+  '((bold       . 1)
+    (dark       . 2)
+    (italic     . 3)
+    (underscore . 4)
+    (blink      . 5)
+    (rapid      . 6)
+    (contrary   . 7)
+    (concealed  . 8)
+    (strike     . 9))
   "List of styles.")
 
-(defconst ansi-reset "\e[0m"
+(defconst ansi-reset 0
   "Ansi code for reset.")
 
 
@@ -150,11 +150,28 @@
           (rapid      (string) (<< (ansi-rapid string)))
           (contrary   (string) (<< (ansi-contrary string)))
           (concealed  (string) (<< (ansi-concealed string)))
-          (strike     (string) (<< (ansi-strike string)))
-          )
+          (strike     (string) (<< (ansi-strike string))))
      (let (result)
        ,@body
        result)))
+
+
+(defun ansi-color (string color)
+  "Paint STRING with COLOR."
+  (ansi-effect ansi-colors string color))
+
+(defun ansi-on-color (string color)
+  "Paint STRING on COLOR."
+  (ansi-effect ansi-on-colors string color))
+
+(defun ansi-style (string style)
+  "Style STRING with STYLE."
+  (ansi-effect ansi-styles string style))
+
+(defun ansi-effect (list string effect)
+  "Add EFFECT to string."
+  (let ((code (cdr (assoc effect list))))
+    (format "\e[%sm%s\e[%sm" code string ansi-reset)))
 
 
 ;; ON TEXT
@@ -186,11 +203,6 @@
 (defun ansi-white (string)
   (ansi-color string 'white))
 
-(defun ansi-color (string color)
-  "Paint STRING with COLOR."
-  (let ((code (cdr (assoc color ansi-colors))))
-    (concat code string ansi-reset)))
-
 
 ;; ON COLORS
 
@@ -220,11 +232,6 @@
 
 (defun ansi-on-white (string)
   (ansi-on-color string 'white))
-
-(defun ansi-on-color (string color)
-  "Paint STRING on COLOR."
-  (let ((code (cdr (assoc color ansi-on-colors))))
-    (concat code string ansi-reset)))
 
 
 ;; STYLES
@@ -256,11 +263,6 @@
 
 (defun ansi-strike (string)
   (ansi-style string 'strike))
-
-(defun ansi-style (string style)
-  "Style STRING with STYLE."
-  (let ((code (cdr (assoc style ansi-styles))))
-    (concat code string ansi-reset)))
 
 
 (provide 'ansi)
