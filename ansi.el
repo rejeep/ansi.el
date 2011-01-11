@@ -33,18 +33,30 @@
 
 ;; This package defines functions that turn string into ansi colored
 ;; strings.
-;;
-;; You can paint string like this (see `ansi-colors' for all possible
-;; colors that text can have).
+
+;; You can paint strings (see `ansi-colors' for all possible text
+;; colors).
 ;;
 ;;   (ansi-red "foo")
 ;;   (ansi-black "bar")
 ;;
-;; You can also use `with-ansi', which allows for a simplified DSL.
+;;
+;; You can paint a string backgrounds (see `ansi-on-colors' for all
+;; possible background colors).
+;; 
+;;   (ansi-on-blue "foo")
+;;   (ansi-on-green "bar")
+;;
+;;
+;; You can use `with-ansi', which allows for a simplified DSL.
 ;;
 ;;   (with-ansi
 ;;    (red "foo")
-;;    (black "bar"))
+;;    (black "bar")
+;;
+;;   (with-ansi
+;;    (on-blue "foo")
+;;    (on-green "bar")
 
 
 ;;; Code:
@@ -64,6 +76,17 @@
     (white   . "\e[37m"))
   "List of text colors.")
 
+(defconst ansi-on-colors
+  '((black   . "\e[40m")
+    (red     . "\e[41m")
+    (green   . "\e[42m")
+    (yellow  . "\e[43m")
+    (blue    . "\e[44m")
+    (magenta . "\e[45m")
+    (cyan    . "\e[46m")
+    (white   . "\e[47m"))
+  "List of colors to draw text on.")
+
 (defconst ansi-reset "\e[0m"
   "Ansi code for reset.")
 
@@ -71,6 +94,8 @@
 (defmacro with-ansi (&rest body)
   "Allows using shortcut names of coloring functions."
   `(flet ((<< (colored) (setq result (concat result colored)) colored)
+
+          ;; TEXT COLORS
           (black   (string) (<< (ansi-black string)))
           (red     (string) (<< (ansi-red string)))
           (green   (string) (<< (ansi-green string)))
@@ -78,11 +103,23 @@
           (blue    (string) (<< (ansi-blue string)))
           (magenta (string) (<< (ansi-magenta string)))
           (cyan    (string) (<< (ansi-cyan string)))
-          (white   (string) (<< (ansi-white string))))
+          (white   (string) (<< (ansi-white string)))
+
+          ;; ON COLORS
+          (on-black   (string) (<< (ansi-on-black string)))
+          (on-red     (string) (<< (ansi-on-red string)))
+          (on-green   (string) (<< (ansi-on-green string)))
+          (on-yellow  (string) (<< (ansi-on-yellow string)))
+          (on-blue    (string) (<< (ansi-on-blue string)))
+          (on-magenta (string) (<< (ansi-on-magenta string)))
+          (on-cyan    (string) (<< (ansi-on-cyan string)))
+          (on-white   (string) (<< (ansi-on-white string))))
      (let (result)
        ,@body
        result)))
 
+
+;; ON TEXT
 
 (defun ansi-black (string)
   (ansi-color string 'black))
@@ -111,10 +148,44 @@
 (defun ansi-white (string)
   (ansi-color string 'white))
 
-
 (defun ansi-color (string color)
   "Paint STRING with COLOR."
   (let ((code (cdr (assoc color ansi-colors))))
+    (concat code string ansi-reset)))
+
+
+;; ON COLORS
+
+(defun ansi-on-black (string)
+  (ansi-on-color string 'black))
+
+(defun ansi-on-black (string)
+  (ansi-on-color string 'black))
+
+(defun ansi-on-red (string)
+  (ansi-on-color string 'red))
+
+(defun ansi-on-green (string)
+  (ansi-on-color string 'green))
+
+(defun ansi-on-yellow (string)
+  (ansi-on-color string 'yellow))
+
+(defun ansi-on-blue (string)
+  (ansi-on-color string 'blue))
+
+(defun ansi-on-magenta (string)
+  (ansi-on-color string 'magenta))
+
+(defun ansi-on-cyan (string)
+  (ansi-on-color string 'cyan))
+
+(defun ansi-on-white (string)
+  (ansi-on-color string 'white))
+
+(defun ansi-on-color (string color)
+  "Paint STRING on COLOR."
+  (let ((code (cdr (assoc color ansi-on-colors))))
     (concat code string ansi-reset)))
 
 
