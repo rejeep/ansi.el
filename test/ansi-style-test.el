@@ -19,9 +19,6 @@
 (ert-deftest test-style-contrary ()
   (should-style 'ansi-contrary 7))
 
-(ert-deftest test-style-reverse ()
-  (should-style 'ansi-reverse 7))
-
 (ert-deftest test-style-concealed ()
   (should-style 'ansi-concealed 8))
 
