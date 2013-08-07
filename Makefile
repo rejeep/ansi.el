@@ -1,2 +1,4 @@
 all:
-	carton exec ./test/ansi-test
+	cask exec ./test/ansi-test
+
+.PHONY: all
