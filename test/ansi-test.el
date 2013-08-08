@@ -9,9 +9,9 @@
     (should (equal actual expected))))
 
 (ert-deftest test-ansi-concat ()
-  (should (equal (ansi-concat "a" "b" "c") "abc"))
-  (should (equal (ansi-concat "a" nil "c") "ac"))
-  (should (equal (ansi-concat "a" 1 "c")   "ac")))
+  (should (equal (ansi--concat "a" "b" "c") "abc"))
+  (should (equal (ansi--concat "a" nil "c") "ac"))
+  (should (equal (ansi--concat "a" 1 "c")   "ac")))
 
 (ert-deftest test-with-ansi-can-handle-different-return-values ()
   (with-ansi "")
