@@ -1,6 +1,6 @@
 ;;; ansi.el --- Turn string into ansi strings
 
-;; Copyright (C) 2010 Johan Andersson
+;; Copyright (C) 2010-2013 Johan Andersson
 
 ;; Author: Johan Andersson <johan.rejeep@gmail.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
