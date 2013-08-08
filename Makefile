@@ -1,4 +1,4 @@
 all:
-	cask exec ./test/ansi-test
+	cask exec ert-runner run -l test/ansi-init.el
 
 .PHONY: all

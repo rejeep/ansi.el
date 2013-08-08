@@ -7,6 +7,7 @@
 ;; Version: 0.0.2
 ;; Keywords: color, ansi
 ;; URL: http://github.com/rejeep/ansi
+;; Package-Requires: ((cl-lib "0.3") (s "1.6.1") (dash "1.5.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -29,9 +30,9 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl))
+(require 'cl-lib)
 
+
 
 (defconst ansi-colors
   '((black   . 30)
@@ -70,71 +71,64 @@
 (defconst ansi-reset 0
   "Ansi code for reset.")
 
+
 
-(defmacro ansi-defun (list effect)
-  "Creates an ansi function with EFFECT."
+(defun ansi--concat (&rest sequences)
+  (apply 's-concat (-select 'stringp sequences)))
+
+(defmacro ansi--define (scope effect)
+  "Define ansi function with EFFECT."
   (let ((fn-name (intern (format "ansi-%s" (symbol-name effect)))))
     `(defun ,fn-name (string &rest objects)
-       ,(format "Add %s ansi effect on STRING." effect)
-       (ansi-effect ,list ',effect string objects))))
+       ,(format "Add '%s' ansi effect to string." effect)
+       (let ((code (cdr (assoc ',effect ,scope)))
+             (formatted (apply 'format (cons string objects))))
+         (format "\e[%dm%s\e[%sm" code formatted ,ansi-reset)))))
 
 (defmacro with-ansi (&rest body)
-  "Allows using shortcut names of coloring functions."
-  `(flet
-       ,(mapcar
+  "allows using shortcut names of coloring functions."
+  `(cl-flet
+       ,(-map
          (lambda (alias)
            (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
              `(,alias (string &rest objects) (apply ',fn (cons string objects)))))
-         (append
-          (mapcar 'car ansi-colors)
-          (mapcar 'car ansi-on-colors)
-          (mapcar 'car ansi-styles)))
-     ,(cons 'ansi-concat body)))
+         (-concat
+          (-map 'car ansi-colors)
+          (-map 'car ansi-on-colors)
+          (-map 'car ansi-styles)))
+     ,(cons 'ansi--concat body)))
 
+
 
-(defun ansi-concat (&rest sequences)
-  "Like `concat' but concats only the string values from SEQUENCES."
-  (let ((strings (remove-if-not 'stringp sequences)))
-    (apply 'concat strings)))
+;; TODO: Loops
 
-(defun ansi-effect (list effect string objects)
-  "Add EFFECT to string."
-  (let ((code (cdr (assoc effect list)))
-        (formatted (apply 'format (cons string objects))))
-    (format "\e[%sm%s\e[%sm" code formatted ansi-reset)))
+(ansi--define ansi-colors black)
+(ansi--define ansi-colors red)
+(ansi--define ansi-colors green)
+(ansi--define ansi-colors yellow)
+(ansi--define ansi-colors blue)
+(ansi--define ansi-colors magenta)
+(ansi--define ansi-colors cyan)
+(ansi--define ansi-colors white)
 
+(ansi--define ansi-on-colors on-black)
+(ansi--define ansi-on-colors on-red)
+(ansi--define ansi-on-colors on-green)
+(ansi--define ansi-on-colors on-yellow)
+(ansi--define ansi-on-colors on-blue)
+(ansi--define ansi-on-colors on-magenta)
+(ansi--define ansi-on-colors on-cyan)
+(ansi--define ansi-on-colors on-white)
 
-;; COLORS
-(ansi-defun ansi-colors black)
-(ansi-defun ansi-colors red)
-(ansi-defun ansi-colors green)
-(ansi-defun ansi-colors yellow)
-(ansi-defun ansi-colors blue)
-(ansi-defun ansi-colors magenta)
-(ansi-defun ansi-colors cyan)
-(ansi-defun ansi-colors white)
-
-;; ON COLORS
-(ansi-defun ansi-on-colors on-black)
-(ansi-defun ansi-on-colors on-red)
-(ansi-defun ansi-on-colors on-green)
-(ansi-defun ansi-on-colors on-yellow)
-(ansi-defun ansi-on-colors on-blue)
-(ansi-defun ansi-on-colors on-magenta)
-(ansi-defun ansi-on-colors on-cyan)
-(ansi-defun ansi-on-colors on-white)
-
-;; STYLES
-(ansi-defun ansi-styles bold)
-(ansi-defun ansi-styles dark)
-(ansi-defun ansi-styles italic)
-(ansi-defun ansi-styles underscore)
-(ansi-defun ansi-styles blink)
-(ansi-defun ansi-styles rapid)
-(ansi-defun ansi-styles contrary)
-(ansi-defun ansi-styles concealed)
-(ansi-defun ansi-styles strike)
-
+(ansi--define ansi-styles bold)
+(ansi--define ansi-styles dark)
+(ansi--define ansi-styles italic)
+(ansi--define ansi-styles underscore)
+(ansi--define ansi-styles blink)
+(ansi--define ansi-styles rapid)
+(ansi--define ansi-styles contrary)
+(ansi--define ansi-styles concealed)
+(ansi--define ansi-styles strike)
 
 (provide 'ansi)
 
