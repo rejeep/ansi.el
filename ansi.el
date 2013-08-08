@@ -100,8 +100,6 @@
 
 
 
-;; TODO: Loops
-
 (ansi--define ansi-colors black)
 (ansi--define ansi-colors red)
 (ansi--define ansi-colors green)
