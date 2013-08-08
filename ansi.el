@@ -7,7 +7,7 @@
 ;; Version: 0.0.2
 ;; Keywords: color, ansi
 ;; URL: http://github.com/rejeep/ansi
-;; Package-Requires: ((cl-lib "0.3") (s "1.6.1") (dash "1.5.0"))
+;; Package-Requires: ((s "1.6.1") (dash "1.5.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -30,7 +30,8 @@
 
 ;;; Code:
 
-(require 'cl-lib)
+(eval-when-compile
+  (require 'cl))
 
 
 
@@ -87,7 +88,7 @@
 
 (defmacro with-ansi (&rest body)
   "allows using shortcut names of coloring functions."
-  `(cl-flet
+  `(flet
        ,(-map
          (lambda (alias)
            (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
