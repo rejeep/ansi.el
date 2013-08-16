@@ -71,8 +71,8 @@
     (strike     . 9))
   "List of styles.")
 
-(defconst ansi-reset 0
-  "Ansi code for reset.")
+(eval-when-compile
+  (defconst ansi-reset 0 "Ansi code for reset."))
 
 
 
