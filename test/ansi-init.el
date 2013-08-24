@@ -5,7 +5,7 @@
 (require 'cask)
 
 (defvar ansi-test/test-path
-  (f-dirname load-file-name))
+  (f-dirname (f-this-file)))
 
 (defvar ansi-test/root-path
   (f-parent ansi-test/test-path))
