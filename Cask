@@ -8,4 +8,5 @@
  (depends-on "s")
  (depends-on "dash")
  (depends-on "el-mock")
- (depends-on "ert-runner"))
+ (depends-on "ert-runner")
+ (depends-on "cask"))
