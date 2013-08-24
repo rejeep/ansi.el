@@ -89,7 +89,7 @@
          (format "\e[%dm%s\e[%sm" code formatted ,ansi-reset)))))
 
 (defmacro with-ansi (&rest body)
-  "allows using shortcut names of coloring functions."
+  "In this block shortcut names (without ansi- prefix) can be used."
   `(flet
        ,(-map
          (lambda (alias)
