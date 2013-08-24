@@ -79,14 +79,19 @@
 (defun ansi--concat (&rest sequences)
   (apply 's-concat (-select 'stringp sequences)))
 
-(defmacro ansi--define (scope effect)
+(defun ansi--code (effect)
+  "Return code for EFFECT."
+  (or
+   (cdr (assoc effect ansi-colors))
+   (cdr (assoc effect ansi-on-colors))
+   (cdr (assoc effect ansi-styles))))
+
+(defmacro ansi--define (effect)
   "Define ansi function with EFFECT."
   (let ((fn-name (intern (format "ansi-%s" (symbol-name effect)))))
-    `(defun ,fn-name (string &rest objects)
-       ,(format "Add '%s' ansi effect to string." effect)
-       (let ((code (cdr (assoc ',effect ,scope)))
-             (formatted (apply 'format (cons string objects))))
-         (format "\e[%dm%s\e[%sm" code formatted ,ansi-reset)))))
+    `(defun ,fn-name (format-string &rest objects)
+       ,(format "Add '%s' ansi effect to text." effect)
+       (apply 'ansi-apply (cons ',effect (cons format-string objects))))))
 
 (defmacro with-ansi (&rest body)
   "In this block shortcut names (without ansi- prefix) can be used."
@@ -101,35 +106,41 @@
           (-map 'car ansi-styles)))
      ,(cons 'ansi--concat body)))
 
+(defun ansi-apply (effect format-string &rest objects)
+  "Add EFFECT to text."
+  (let ((code (ansi--code effect))
+        (text (apply 'format format-string objects)))
+    (format "\e[%dm%s\e[%sm" code text ansi-reset)))
+
 
 
-(ansi--define ansi-colors black)
-(ansi--define ansi-colors red)
-(ansi--define ansi-colors green)
-(ansi--define ansi-colors yellow)
-(ansi--define ansi-colors blue)
-(ansi--define ansi-colors magenta)
-(ansi--define ansi-colors cyan)
-(ansi--define ansi-colors white)
+(ansi--define black)
+(ansi--define red)
+(ansi--define green)
+(ansi--define yellow)
+(ansi--define blue)
+(ansi--define magenta)
+(ansi--define cyan)
+(ansi--define white)
 
-(ansi--define ansi-on-colors on-black)
-(ansi--define ansi-on-colors on-red)
-(ansi--define ansi-on-colors on-green)
-(ansi--define ansi-on-colors on-yellow)
-(ansi--define ansi-on-colors on-blue)
-(ansi--define ansi-on-colors on-magenta)
-(ansi--define ansi-on-colors on-cyan)
-(ansi--define ansi-on-colors on-white)
+(ansi--define on-black)
+(ansi--define on-red)
+(ansi--define on-green)
+(ansi--define on-yellow)
+(ansi--define on-blue)
+(ansi--define on-magenta)
+(ansi--define on-cyan)
+(ansi--define on-white)
 
-(ansi--define ansi-styles bold)
-(ansi--define ansi-styles dark)
-(ansi--define ansi-styles italic)
-(ansi--define ansi-styles underscore)
-(ansi--define ansi-styles blink)
-(ansi--define ansi-styles rapid)
-(ansi--define ansi-styles contrary)
-(ansi--define ansi-styles concealed)
-(ansi--define ansi-styles strike)
+(ansi--define bold)
+(ansi--define dark)
+(ansi--define italic)
+(ansi--define underscore)
+(ansi--define blink)
+(ansi--define rapid)
+(ansi--define contrary)
+(ansi--define concealed)
+(ansi--define strike)
 
 (provide 'ansi)
 

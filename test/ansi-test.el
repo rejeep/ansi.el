@@ -18,3 +18,11 @@
   (with-ansi nil)
   (with-ansi 0)
   (with-ansi '(a)))
+
+(ert-deftest test-ansi-apply ()
+  (should (equal (ansi-black "foo %s" "bar")
+                 (ansi-apply 'black "foo %s" "bar")))
+  (should (equal (ansi-on-black "foo %s" "bar")
+                 (ansi-apply 'on-black "foo %s" "bar")))
+  (should (equal (ansi-bold "foo %s" "bar")
+                 (ansi-apply 'bold "foo %s" "bar"))))

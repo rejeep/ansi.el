@@ -55,6 +55,12 @@ as the above.
  (blink "bar"))
 ```
 
+You can also use `ansi-apply` if you only have the name of the color:
+
+```lisp
+(ansi-apply 'red "foo %s" "bar")
+```
+
 ### Nesting
 
 Lets say you want to make a text bold, red and blinking. You can do
