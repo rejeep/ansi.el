@@ -4,7 +4,7 @@ EMACS ?= emacs
 all: test
 
 test:
-	cask exec ert-runner -l test/ansi-init.el
+	cask exec ert-runner
 
 compile:
 	${CASK} exec ${EMACS} -Q -batch -f batch-byte-compile ansi.el
