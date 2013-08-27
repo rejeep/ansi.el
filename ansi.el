@@ -105,9 +105,11 @@
           (-map 'car ansi-styles)))
      ,(cons 'ansi--concat body)))
 
-(defun ansi-apply (effect format-string &rest objects)
-  "Add EFFECT to text."
-  (let ((code (ansi--code effect))
+(defun ansi-apply (effect-or-code format-string &rest objects)
+  "Apply EFFECT-OR-CODE to text."
+  (let ((code (if (numberp effect-or-code)
+                  effect-or-code
+                (ansi--code effect-or-code)))
         (text (apply 'format format-string objects)))
     (format "\e[%dm%s\e[%sm" code text ansi-reset)))
 
