@@ -61,6 +61,17 @@ You can also use `ansi-apply` if you only have the name of the color:
 (ansi-apply 'red "foo %s" "bar")
 ```
 
+### CSI
+
+Ansi supports CSI codes, for example moving the cursor:
+
+```lisp
+(ansi-up)
+(ansi-down 3)
+(ansi-csi-apply 'forward)
+(ansi-csi-apply "J" 10)
+```
+
 ### Nesting
 
 Lets say you want to make a text bold, red and blinking. You can do

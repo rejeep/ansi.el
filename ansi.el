@@ -71,6 +71,13 @@
     (strike     . 9))
   "List of styles.")
 
+(defvar ansi-csis
+  '((up       . "A")
+    (down     . "B")
+    (forward  . "C")
+    (backward . "D"))
+  "...")
+
 (defconst ansi-reset 0 "Ansi code for reset.")
 
 
@@ -84,6 +91,10 @@
    (cdr (assoc effect ansi-colors))
    (cdr (assoc effect ansi-on-colors))
    (cdr (assoc effect ansi-styles))))
+
+(defun ansi--char (effect)
+  "Return char for EFFECT."
+  (cdr (assoc effect ansi-csis)))
 
 (defmacro ansi--define (effect)
   "Define ansi function with EFFECT."
@@ -102,7 +113,8 @@
          (-concat
           (-map 'car ansi-colors)
           (-map 'car ansi-on-colors)
-          (-map 'car ansi-styles)))
+          (-map 'car ansi-styles)
+          (-map 'car ansi-csis)))
      ,(cons 'ansi--concat body)))
 
 (defun ansi-apply (effect-or-code format-string &rest objects)
@@ -112,6 +124,30 @@
                 (ansi--code effect-or-code)))
         (text (apply 'format format-string objects)))
     (format "\e[%dm%s\e[%sm" code text ansi-reset)))
+
+(defun ansi-csi-apply (effect-or-char &optional reps)
+  "Apply EFFECT-OR-CHAR REPS (1 default) number of times."
+  (let ((char (if (symbolp effect-or-char)
+                  (ansi--char effect-or-char)
+                effect-or-char)))
+    (format "\u001b[%d%s" (or reps 1) char)))
+
+(defun ansi-up (&optional n)
+  "Move N steps (1 step default) up."
+  (ansi-csi-apply 'up n))
+
+(defun ansi-down (&optional n)
+  "Move N steps (1 step default) down."
+  (ansi-csi-apply 'down n))
+
+(defun ansi-forward (&optional n)
+  "Move N steps (1 step default) forward."
+  (ansi-csi-apply 'forward n))
+
+(defun ansi-backward (&optional n)
+  "Move N steps (1 step default) backward."
+  (ansi-csi-apply 'backward n))
+
 
 
 

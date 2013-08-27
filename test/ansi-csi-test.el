@@ -1,0 +1,37 @@
+(ert-deftest ansi-csi-test/up ()
+  (should (equal (ansi-up) "\u001b[1A"))
+  (should (equal (ansi-up 1) "\u001b[1A"))
+  (should (equal (ansi-up 2) "\u001b[2A")))
+
+(ert-deftest ansi-csi-test/down ()
+  (should (equal (ansi-down) "\u001b[1B"))
+  (should (equal (ansi-down 1) "\u001b[1B"))
+  (should (equal (ansi-down 2) "\u001b[2B")))
+
+(ert-deftest ansi-csi-test/forward ()
+  (should (equal (ansi-forward) "\u001b[1C"))
+  (should (equal (ansi-forward 1) "\u001b[1C"))
+  (should (equal (ansi-forward 2) "\u001b[2C")))
+
+(ert-deftest ansi-csi-test/backward ()
+  (should (equal (ansi-backward) "\u001b[1D"))
+  (should (equal (ansi-backward 1) "\u001b[1D"))
+  (should (equal (ansi-backward 2) "\u001b[2D")))
+
+(ert-deftest ansi-csi-test/with-ansi ()
+  (should (equal (with-ansi (up 3)) (ansi-up 3)))
+  (should (equal (with-ansi (down 3)) (ansi-down 3)))
+  (should (equal (with-ansi (forward 3)) (ansi-forward 3)))
+  (should (equal (with-ansi (backward 3)) (ansi-backward 3))))
+
+(ert-deftest ansi-csi-test/apply-effect ()
+  (should (equal (ansi-csi-apply 'up) "\u001b[1A"))
+  (should (equal (ansi-csi-apply 'down 1) "\u001b[1B"))
+  (should (equal (ansi-csi-apply 'forward 2) "\u001b[2C"))
+  (should (equal (ansi-csi-apply 'backward 3) "\u001b[3D")))
+
+(ert-deftest ansi-csi-test/apply-char ()
+  (should (equal (ansi-csi-apply "A") "\u001b[1A"))
+  (should (equal (ansi-csi-apply "B" 1) "\u001b[1B"))
+  (should (equal (ansi-csi-apply "C" 2) "\u001b[2C"))
+  (should (equal (ansi-csi-apply "D" 3) "\u001b[3D")))
