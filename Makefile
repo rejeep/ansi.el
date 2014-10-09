@@ -3,13 +3,19 @@ EMACS ?= emacs
 
 all: test
 
-test:
-	cask exec ert-runner
+test: clean-elc
+	${MAKE} unit
+	${MAKE} compile
+	${MAKE} unit
+	${MAKE} clean-elc
+
+unit:
+	${CASK} exec ert-runner
 
 compile:
-	${CASK} exec ${EMACS} -Q -batch -f batch-byte-compile ansi.el
+	${CASK} build
 
 clean-elc:
-	rm -f ansi.elc
+	${CASK} clean-elc
 
-.PHONY: all commander test clean-elc
+.PHONY:	all test unit

@@ -1,4 +1,4 @@
-# ansi.el [![Build Status](https://api.travis-ci.org/rejeep/ansi.el.png?branch=master)](http://travis-ci.org/rejeep/ansi.el)
+# ansi.el [![Build Status](https://api.travis-ci.org/rejeep/ansi.el.png?branch=master)](http://travis-ci.org/rejeep/ansi.el) [![Coverage Status](https://img.shields.io/coveralls/rejeep/ansi.el.svg)](https://coveralls.io/r/rejeep/ansi.el)
 
 This package defines functions that turns simple strings to ansi
 strings. Turning a string into an ansi string can be to add color to a
