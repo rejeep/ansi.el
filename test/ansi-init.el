@@ -1,5 +1,5 @@
 (require 'undercover)
-(undercover "/ansi\\.el$")
+(undercover "ansi.el")
 
 (require 'f)
 (require 's)
