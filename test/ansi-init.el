@@ -19,5 +19,3 @@
 (unload-feature 'ansi 'force)
 
 (load (f-expand "ansi" ansi-test/root-path))
-
-(add-to-list 'load-path ansi-test/root-path)
