@@ -3,6 +3,8 @@
 
 (package-file "ansi.el")
 
+(files "ansi.el")
+
 (development
  (depends-on "f")
  (depends-on "s")
