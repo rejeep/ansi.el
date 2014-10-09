@@ -1,6 +1,7 @@
 (require 'f)
 (require 's)
 (require 'dash)
+(require 'ert)
 (require 'el-mock)
 
 (defvar ansi-test/test-path
@@ -18,8 +19,5 @@
 (unload-feature 'ansi 'force)
 
 (load (f-expand "ansi" ansi-test/root-path))
-
-(unless (require 'ert nil 'noerror)
-  (require 'ert (f-expand "ert" ansi-test/vendor-path)))
 
 (add-to-list 'load-path ansi-test/root-path)
