@@ -33,6 +33,8 @@
 (require 'dash)
 (require 's)
 
+(require 'cl-lib)
+
 
 
 (defconst ansi-colors
