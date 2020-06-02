@@ -90,6 +90,7 @@
 
 
 (defun ansi--concat (&rest sequences)
+  "Concat string elements in SEQUENCES."
   (apply 's-concat (-select 'stringp sequences)))
 
 (defun ansi--code (effect)
@@ -111,7 +112,7 @@
        (apply 'ansi-apply (cons ',effect (cons format-string objects))))))
 
 (defmacro with-ansi (&rest body)
-  "In this block shortcut names (without ansi- prefix) can be used."
+  "Shortcut names (without ansi- prefix) can be used in this BODY."
   `(cl-flet
        ,(-map
          (lambda (alias)
@@ -125,7 +126,8 @@
      ,(cons 'ansi--concat body)))
 
 (defun ansi-apply (effect-or-code format-string &rest objects)
-  "Apply EFFECT-OR-CODE to text."
+  "Apply EFFECT-OR-CODE to text.
+FORMAT-STRING and OBJECTS are processed same as `apply'."
   (let ((code (if (numberp effect-or-code)
                   effect-or-code
                 (ansi--code effect-or-code)))
