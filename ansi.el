@@ -32,14 +32,7 @@
 
 (require 'dash)
 (require 's)
-
-(when (version<= "24.3" emacs-version)
-  (require 'cl-lib))
-
-;; Compatability alias for versions before cl-flet was introduced.
-(defalias 'ansi--cl-flet (if (version<= "24.3" emacs-version)
-                             'cl-flet
-                           'flet))
+(require 'cl-lib)
 
 
 
@@ -111,7 +104,7 @@
 
 (defmacro with-ansi (&rest body)
   "In this block shortcut names (without ansi- prefix) can be used."
-  `(ansi--cl-flet
+  `(cl-flet
        ,(-map
          (lambda (alias)
            (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
