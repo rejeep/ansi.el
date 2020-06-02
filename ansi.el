@@ -5,7 +5,7 @@
 ;; Author: Johan Andersson <johan.rejeep@gmail.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
 ;; Version: 0.4.1
-;; Keywords: color, ansi
+;; Keywords: terminals color ansi
 ;; URL: http://github.com/rejeep/ansi
 ;; Package-Requires: ((emacs "24.4") (s "1.6.1") (dash "1.5.0"))
 
