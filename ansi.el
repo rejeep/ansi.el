@@ -7,7 +7,7 @@
 ;; Version: 0.4.1
 ;; Keywords: terminals color ansi
 ;; URL: http://github.com/rejeep/ansi
-;; Package-Requires: ((emacs "24.4") (s "1.6.1") (dash "1.5.0"))
+;; Package-Requires: ((emacs "24.4"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -38,8 +38,6 @@
 
 ;;; Code:
 
-(require 'dash)
-(require 's)
 (require 'cl-lib)
 
 
@@ -114,15 +112,15 @@
 (defmacro with-ansi (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY."
   `(cl-flet
-       ,(-map
+       ,(mapcar
          (lambda (alias)
            (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
              `(,alias (string &rest objects) (apply ',fn (cons string objects)))))
-         (-concat
-          (-map 'car ansi-colors)
-          (-map 'car ansi-on-colors)
-          (-map 'car ansi-styles)
-          (-map 'car ansi-csis)))
+         (append
+          (mapcar #'car ansi-colors)
+          (mapcar #'car ansi-on-colors)
+          (mapcar #'car ansi-styles)
+          (mapcar #'car ansi-csis)))
      ,(cons 'ansi--concat body)))
 
 (defun ansi-apply (effect-or-code format-string &rest objects)
