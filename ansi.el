@@ -42,6 +42,16 @@
 (require 's)
 (require 'cl-lib)
 
+(defgroup ansi nil
+  "Turn string into ansi strings."
+  :group 'lisp)
+
+(defcustom ansi-inhibit-ansi nil
+  "If non-nil, no apply ANSI code.
+This variable affects `with-ansi', `with-ansi-princ'."
+  :group 'ansi
+  :type 'boolean)
+
 
 
 (defconst ansi-colors
@@ -113,21 +123,25 @@
 
 (defmacro with-ansi (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY."
-  `(cl-flet
-       ,(-map
-         (lambda (alias)
-           (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
-             `(,alias (string &rest objects) (apply ',fn (cons string objects)))))
-         (-concat
-          (-map 'car ansi-colors)
-          (-map 'car ansi-on-colors)
-          (-map 'car ansi-styles)
-          (-map 'car ansi-csis)))
-     ,(cons 'ansi--concat body)))
+  (if ansi-inhibit-ansi
+      `(ansi--concat ,@body)
+    `(cl-flet
+         ,(-map
+           (lambda (alias)
+             (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
+               `(,alias (string &rest objects) (apply ',fn (cons string objects)))))
+           (-concat
+            (-map 'car ansi-colors)
+            (-map 'car ansi-on-colors)
+            (-map 'car ansi-styles)
+            (-map 'car ansi-csis)))
+       ,(cons 'ansi--concat body))))
 
 (defmacro with-ansi-princ (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY and princ."
-  `(princ (with-ansi ,@body)))
+  (if ansi-inhibit-ansi
+      `(princ (ansi--concat ,@body))
+    `(princ (with-ansi ,@body))))
 
 (defun ansi-apply (effect-or-code format-string &rest objects)
   "Apply EFFECT-OR-CODE to text.
