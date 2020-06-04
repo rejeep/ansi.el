@@ -30,8 +30,8 @@ jobs:
 
     - name: Run tests
       if: matrix.allow_failure != true
-      run: 'make test'
+      run: 'cask && make test'
 
     - name: Run tests (allow failure)
       if: matrix.allow_failure == true
-      run: 'make test || true'
+      run: 'cask && make test || true'
