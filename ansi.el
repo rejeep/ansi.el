@@ -125,6 +125,10 @@
           (-map 'car ansi-csis)))
      ,(cons 'ansi--concat body)))
 
+(defmacro with-ansi-princ (&rest body)
+  "Shortcut names (without ansi- prefix) can be used in this BODY and princ."
+  `(princ (with-ansi ,@body)))
+
 (defun ansi-apply (effect-or-code format-string &rest objects)
   "Apply EFFECT-OR-CODE to text.
 FORMAT-STRING and OBJECTS are processed same as `apply'."
