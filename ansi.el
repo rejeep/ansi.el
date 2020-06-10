@@ -1,4 +1,4 @@
-;;; ansi.el --- Turn string into ansi strings
+;;; ansi.el --- Turn string into ansi strings  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2010-2013 Johan Andersson
 
@@ -7,7 +7,7 @@
 ;; Version: 0.4.1
 ;; Keywords: terminals color ansi
 ;; URL: http://github.com/rejeep/ansi
-;; Package-Requires: ((s "1.6.1") (dash "1.5.0"))
+;; Package-Requires: ((emacs "24.4") (s "1.6.1") (dash "1.5.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
