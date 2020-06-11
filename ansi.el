@@ -7,7 +7,7 @@
 ;; Version: 0.4.1
 ;; Keywords: terminals color ansi
 ;; URL: http://github.com/rejeep/ansi
-;; Package-Requires: ((emacs "24.1") (s "1.6.1") (dash "1.5.0"))
+;; Package-Requires: ((emacs "24.1") (cl-lib "0.6") (s "1.6.1") (dash "1.5.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
