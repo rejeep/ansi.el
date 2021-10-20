@@ -38,8 +38,6 @@
 
 ;;; Code:
 
-(require 'dash)
-(require 's)
 (require 'cl-lib)
 
 (defgroup ansi nil
