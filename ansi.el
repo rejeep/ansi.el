@@ -7,7 +7,7 @@
 ;; Version: 0.4.1
 ;; Keywords: terminals color ansi
 ;; URL: http://github.com/rejeep/ansi
-;; Package-Requires: ((emacs "24.1") (cl-lib "0.6") (s "1.6.1") (dash "1.5.0"))
+;; Package-Requires: ((emacs "24.1") (cl-lib "0.6") (s "1.6.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -101,7 +101,7 @@ This variable affects `with-ansi', `with-ansi-princ'."
 
 (defun ansi--concat (&rest sequences)
   "Concat string elements in SEQUENCES."
-  (apply 's-concat (-select 'stringp sequences)))
+  (apply 's-concat (cl-remove-if-not 'stringp sequences)))
 
 (defun ansi--code (effect)
   "Return code for EFFECT."
@@ -126,15 +126,15 @@ This variable affects `with-ansi', `with-ansi-princ'."
   (if ansi-inhibit-ansi
       `(ansi--concat ,@body)
     `(cl-flet
-         ,(-map
+         ,(mapcar
            (lambda (alias)
              (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
                `(,alias (string &rest objects) (apply ',fn (cons string objects)))))
-           (-concat
-            (-map 'car ansi-colors)
-            (-map 'car ansi-on-colors)
-            (-map 'car ansi-styles)
-            (-map 'car ansi-csis)))
+           (append
+            (mapcar 'car ansi-colors)
+            (mapcar 'car ansi-on-colors)
+            (mapcar 'car ansi-styles)
+            (mapcar 'car ansi-csis)))
        ,(cons 'ansi--concat body))))
 
 (defmacro with-ansi-princ (&rest body)
