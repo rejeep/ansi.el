@@ -1,5 +1,7 @@
 (require 'undercover)
-(undercover "ansi.el")
+(undercover "ansi.el"
+            (:report-format 'lcov)
+            (:send-report nil))
 
 (require 'f)
 (require 's)

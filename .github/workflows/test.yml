@@ -35,3 +35,10 @@ jobs:
     - name: Run tests (allow failure)
       if: matrix.allow_failure == true
       run: 'cask && make test || true'
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        flag-name: emacs-${{ matrix.emacs_version }}
+        parallel: true
