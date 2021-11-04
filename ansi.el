@@ -123,11 +123,12 @@ This variable affects `with-ansi', `with-ansi-princ'."
   "Shortcut names (without ansi- prefix) can be used in this BODY."
   (if ansi-inhibit-ansi
       `(ansi--concat ,@body)
-    `(cl-labels
+    `(cl-macrolet
          ,(mapcar
            (lambda (alias)
              (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
-               `(,alias (string &rest objects) (apply ',fn (cons string objects)))))
+               `(,alias (string &rest objects)
+                        ,(list 'backquote (list fn ',string ',@objects)))))
            (append
             (mapcar 'car ansi-colors)
             (mapcar 'car ansi-on-colors)
