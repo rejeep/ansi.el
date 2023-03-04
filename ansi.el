@@ -117,7 +117,7 @@ This variable affects `with-ansi', `with-ansi-princ'."
   (let ((fn-name (intern (format "ansi-%s" (symbol-name effect)))))
     `(defun ,fn-name (format-string &rest objects)
        ,(format "Add '%s' ansi effect to text." effect)
-       (apply 'ansi-apply (cons ',effect (cons format-string objects))))))
+       (apply 'ansi-apply ',effect format-string objects))))
 
 (defmacro with-ansi (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY."
