@@ -124,16 +124,21 @@ This variable affects `with-ansi', `with-ansi-princ'."
   (if ansi-inhibit-ansi
       `(ansi--concat ,@body)
     `(cl-macrolet
-         ,(mapcar
-           (lambda (alias)
-             (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
-               `(,alias (string &rest objects)
-                        ,(list 'backquote (list fn ',string ',@objects)))))
-           (append
-            (mapcar 'car ansi-colors)
-            (mapcar 'car ansi-on-colors)
-            (mapcar 'car ansi-styles)
-            (mapcar 'car ansi-csis)))
+         (,@(mapcar
+             (lambda (alias)
+               (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
+                 `(,alias (string &rest objects)
+                          ,(list 'backquote (list fn ',string ',@objects)))))
+             (append
+              (mapcar 'car ansi-colors)
+              (mapcar 'car ansi-on-colors)
+              (mapcar 'car ansi-styles)))
+          ,@(mapcar
+             (lambda (alias)
+               (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
+                 `(,alias (&optional n)
+                          ,(list 'backquote (list fn ',n)))))
+             (mapcar 'car ansi-csis)))
        ,(cons 'ansi--concat body))))
 
 (defmacro with-ansi-princ (&rest body)

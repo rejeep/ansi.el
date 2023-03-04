@@ -19,6 +19,7 @@
   (should (equal (ansi-backward 2) "\u001b[2D")))
 
 (ert-deftest ansi-csi-test/with-ansi ()
+  (should (equal (with-ansi (up)) (ansi-up 1)))
   (should (equal (with-ansi (up 3)) (ansi-up 3)))
   (should (equal (with-ansi (down 3)) (ansi-down 3)))
   (should (equal (with-ansi (forward 3)) (ansi-forward 3)))
