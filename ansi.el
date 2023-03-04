@@ -121,31 +121,27 @@ This variable affects `with-ansi', `with-ansi-princ'."
 
 (defmacro with-ansi (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY."
-  (if ansi-inhibit-ansi
-      `(ansi--concat ,@body)
-    `(cl-macrolet
-         (,@(mapcar
-             (lambda (alias)
-               (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
-                 `(,alias (string &rest objects)
-                          ,(list 'backquote (list fn ',string ',@objects)))))
-             (append
-              (mapcar 'car ansi-colors)
-              (mapcar 'car ansi-on-colors)
-              (mapcar 'car ansi-styles)))
-          ,@(mapcar
-             (lambda (alias)
-               (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
-                 `(,alias (&optional n)
-                          ,(list 'backquote (list fn ',n)))))
-             (mapcar 'car ansi-csis)))
-       ,(cons 'ansi--concat body))))
+  `(cl-macrolet
+       (,@(mapcar
+           (lambda (alias)
+             (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
+               `(,alias (string &rest objects)
+                        ,(list 'backquote (list fn ',string ',@objects)))))
+           (append
+            (mapcar 'car ansi-colors)
+            (mapcar 'car ansi-on-colors)
+            (mapcar 'car ansi-styles)))
+        ,@(mapcar
+           (lambda (alias)
+             (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
+               `(,alias (&optional n)
+                        ,(list 'backquote (list fn ',n)))))
+           (mapcar 'car ansi-csis)))
+     (ansi--concat ,@body)))
 
 (defmacro with-ansi-princ (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY and princ."
-  (if ansi-inhibit-ansi
-      `(princ (ansi--concat ,@body))
-    `(princ (with-ansi ,@body))))
+  `(princ (with-ansi ,@body)))
 
 (defun ansi-apply (effect-or-code format-string &rest objects)
   "Apply EFFECT-OR-CODE to text.
@@ -154,14 +150,17 @@ FORMAT-STRING and OBJECTS are processed same as `apply'."
                   effect-or-code
                 (ansi--code effect-or-code)))
         (text (apply 'format format-string objects)))
-    (format "\e[%dm%s\e[%sm" code text ansi-reset)))
+    (if ansi-inhibit-ansi
+        text
+      (format "\e[%dm%s\e[%sm" code text ansi-reset))))
 
 (defun ansi-csi-apply (effect-or-char &optional reps)
   "Apply EFFECT-OR-CHAR REPS (1 default) number of times."
-  (let ((char (if (symbolp effect-or-char)
-                  (ansi--char effect-or-char)
-                effect-or-char)))
-    (format "\u001b[%d%s" (or reps 1) char)))
+  (if ansi-inhibit-ansi ""
+    (let ((char (if (symbolp effect-or-char)
+                    (ansi--char effect-or-char)
+                  effect-or-char)))
+      (format "\u001b[%d%s" (or reps 1) char))))
 
 (defun ansi-up (&optional n)
   "Move N steps (1 step default) up."
