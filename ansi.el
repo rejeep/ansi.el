@@ -136,6 +136,16 @@ This variable affects `with-ansi', `with-ansi-princ'."
    (cdr (assoc effect ansi-on-bright-colors))
    (cdr (assoc effect ansi-styles))))
 
+(defun ansi--is-alias (effect)
+  "Return non-nil if EFFECT is available in DSL."
+  (or
+   (car (assoc effect ansi-colors))
+   (car (assoc effect ansi-bright-colors))
+   (car (assoc effect ansi-on-colors))
+   (car (assoc effect ansi-on-bright-colors))
+   (car (assoc effect ansi-styles))
+   (car (assoc effect ansi-csis))))
+
 (defun ansi--char (effect)
   "Return char for EFFECT."
   (cdr (assoc effect ansi-csis)))
@@ -147,27 +157,18 @@ This variable affects `with-ansi', `with-ansi-princ'."
        ,(format "Add '%s' ansi effect to text." effect)
        (apply 'ansi-apply ',effect format-string objects))))
 
+(cl-eval-when (compile eval load)
+  (defun ansi--substitute (body)
+    (if (listp body)
+        (if (ansi--is-alias (car body))
+            `(,(intern (format "ansi-%s" (symbol-name (car body))))
+              ,@(mapcar (lambda (x) (ansi--substitute x)) (cdr body)))
+          (mapcar (lambda (x) (ansi--substitute x)) body))
+      body)))
+
 (defmacro with-ansi (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY."
-  `(cl-macrolet
-       (,@(mapcar
-           (lambda (alias)
-             (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
-               `(,alias (string &rest objects)
-                        ,(list 'backquote (list fn ',string ',@objects)))))
-           (append
-            (mapcar 'car ansi-colors)
-            (mapcar 'car ansi-bright-colors)
-            (mapcar 'car ansi-on-colors)
-            (mapcar 'car ansi-on-bright-colors)
-            (mapcar 'car ansi-styles)))
-        ,@(mapcar
-           (lambda (alias)
-             (let ((fn (intern (format "ansi-%s" (symbol-name alias)))))
-               `(,alias (&optional n)
-                        ,(list 'backquote (list fn ',n)))))
-           (mapcar 'car ansi-csis)))
-     (ansi--concat ,@body)))
+  `(ansi--concat ,@(ansi--substitute (mapcar #'macroexpand-all body))))
 
 (defmacro with-ansi-princ (&rest body)
   "Shortcut names (without ansi- prefix) can be used in this BODY and princ."
