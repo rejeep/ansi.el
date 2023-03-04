@@ -63,6 +63,17 @@ This variable affects `with-ansi', `with-ansi-princ'."
     (white   . 37))
   "List of text colors.")
 
+(defconst ansi-bright-colors
+  '((bright-black   . 90)
+    (bright-red     . 91)
+    (bright-green   . 92)
+    (bright-yellow  . 93)
+    (bright-blue    . 94)
+    (bright-magenta . 95)
+    (bright-cyan    . 96)
+    (bright-white   . 97))
+  "List of text colors.")
+
 (defconst ansi-on-colors
   '((on-black   . 40)
     (on-red     . 41)
@@ -72,6 +83,17 @@ This variable affects `with-ansi', `with-ansi-princ'."
     (on-magenta . 45)
     (on-cyan    . 46)
     (on-white   . 47))
+  "List of colors to draw text on.")
+
+(defconst ansi-on-bright-colors
+  '((on-bright-black   . 100)
+    (on-bright-red     . 101)
+    (on-bright-green   . 102)
+    (on-bright-yellow  . 103)
+    (on-bright-blue    . 104)
+    (on-bright-magenta . 105)
+    (on-bright-cyan    . 106)
+    (on-bright-white   . 107))
   "List of colors to draw text on.")
 
 (defconst ansi-styles
@@ -105,7 +127,9 @@ This variable affects `with-ansi', `with-ansi-princ'."
   "Return code for EFFECT."
   (or
    (cdr (assoc effect ansi-colors))
+   (cdr (assoc effect ansi-bright-colors))
    (cdr (assoc effect ansi-on-colors))
+   (cdr (assoc effect ansi-on-bright-colors))
    (cdr (assoc effect ansi-styles))))
 
 (defun ansi--char (effect)
@@ -129,7 +153,9 @@ This variable affects `with-ansi', `with-ansi-princ'."
                         ,(list 'backquote (list fn ',string ',@objects)))))
            (append
             (mapcar 'car ansi-colors)
+            (mapcar 'car ansi-bright-colors)
             (mapcar 'car ansi-on-colors)
+            (mapcar 'car ansi-on-bright-colors)
             (mapcar 'car ansi-styles)))
         ,@(mapcar
            (lambda (alias)
@@ -190,6 +216,15 @@ FORMAT-STRING and OBJECTS are processed same as `apply'."
 (ansi--define cyan)
 (ansi--define white)
 
+(ansi--define bright-black)
+(ansi--define bright-red)
+(ansi--define bright-green)
+(ansi--define bright-yellow)
+(ansi--define bright-blue)
+(ansi--define bright-magenta)
+(ansi--define bright-cyan)
+(ansi--define bright-white)
+
 (ansi--define on-black)
 (ansi--define on-red)
 (ansi--define on-green)
@@ -198,6 +233,15 @@ FORMAT-STRING and OBJECTS are processed same as `apply'."
 (ansi--define on-magenta)
 (ansi--define on-cyan)
 (ansi--define on-white)
+
+(ansi--define on-bright-black)
+(ansi--define on-bright-red)
+(ansi--define on-bright-green)
+(ansi--define on-bright-yellow)
+(ansi--define on-bright-blue)
+(ansi--define on-bright-magenta)
+(ansi--define on-bright-cyan)
+(ansi--define on-bright-white)
 
 (ansi--define bold)
 (ansi--define dark)
