@@ -86,3 +86,26 @@ this with nesting.
 (with-ansi
  (bold (red (blink "foo bar"))))
 ```
+
+### Inhibit ANSI and CSI sequences
+
+If you are on a dumb terminal, not running on tty or you just want to
+disable colors, you can inhibit all special/control sequences by
+setting `ansi-inhibit-ansi` to `t`.  Text will still be formated and
+output, but without the special/control sequences.
+
+If you are running your Emacs code from shell, for example as a
+wrapper for a binary for your package, you can detect whether you are
+running in a tty with this code:
+
+```bash
+INHIBIT_ANSI="t"
+if [ -t 1 ] ; then
+    INHIBIT_ANSI="nil"
+fi
+
+## here you run your script
+exec emacs --batch --no-init-file --no-site-file --no-splash \
+     --eval "(ansi-inhibit-ansi $INHIBIT_ANSI)" \  ## << disable ansi if not tty
+     --load=elsa --funcall=elsa-run  ## load your package and run your fn
+```
