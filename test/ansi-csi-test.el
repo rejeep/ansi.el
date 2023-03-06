@@ -18,7 +18,29 @@
   (should (equal (ansi-backward 1) "\u001b[1D"))
   (should (equal (ansi-backward 2) "\u001b[2D")))
 
+(ert-deftest ansi-csi-test/next-line ()
+  (should (equal (ansi-next-line) "\u001b[1E"))
+  (should (equal (ansi-next-line 1) "\u001b[1E"))
+  (should (equal (ansi-next-line 2) "\u001b[2E")))
+
+(ert-deftest ansi-csi-test/previous-line ()
+  (should (equal (ansi-previous-line) "\u001b[1F"))
+  (should (equal (ansi-previous-line 1) "\u001b[1F"))
+  (should (equal (ansi-previous-line 2) "\u001b[2F")))
+
+(ert-deftest ansi-csi-test/column ()
+  (should (equal (ansi-column) "\u001b[1G"))
+  (should (equal (ansi-column 1) "\u001b[1G"))
+  (should (equal (ansi-column 2) "\u001b[2G")))
+
+(ert-deftest ansi-csi-test/kill ()
+  (should (equal (ansi-kill) "\u001b[1K"))
+  (should (equal (ansi-kill 1) "\u001b[1K"))
+  (should (equal (ansi-kill 2) "\u001b[2K")))
+
 (ert-deftest ansi-csi-test/with-ansi ()
+  (should (equal (with-ansi (up)) (ansi-up 1)))
+  (should (equal (with-ansi (kill)) (ansi-kill 1)))
   (should (equal (with-ansi (up 3)) (ansi-up 3)))
   (should (equal (with-ansi (down 3)) (ansi-down 3)))
   (should (equal (with-ansi (forward 3)) (ansi-forward 3)))
