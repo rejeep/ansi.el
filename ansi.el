@@ -117,7 +117,7 @@ This variable affects `with-ansi', `with-ansi-princ'."
     (previous-line . "F")
     (column        . "G")
     (kill          . "K"))
-  "CSI (Control Sequence Introducer) sequences")
+  "CSI (Control Sequence Introducer) sequences.")
 
 (defconst ansi-reset 0 "Ansi code for reset.")
 
@@ -154,7 +154,7 @@ This variable affects `with-ansi', `with-ansi-princ'."
   "Define ansi function with EFFECT."
   (let ((fn-name (intern (format "ansi-%s" (symbol-name effect)))))
     `(defun ,fn-name (format-string &rest objects)
-       ,(format "Add '%s' ansi effect to text." effect)
+       ,(format "Add \\='%s\\=' ansi effect to text." effect)
        (apply 'ansi-apply ',effect format-string objects))))
 
 (cl-eval-when (compile eval load)
@@ -210,15 +210,15 @@ FORMAT-STRING and OBJECTS are processed same as `apply'."
   (ansi-csi-apply 'backward n))
 
 (defun ansi-next-line (&optional n)
-  "Moves cursor to beginning of the line N (default 1) lines down."
+  "Move cursor to beginning of the line N (default 1) lines down."
   (ansi-csi-apply 'next-line n))
 
 (defun ansi-previous-line (&optional n)
-  "Moves cursor to beginning of the line N (default 1) lines up."
+  "Move cursor to beginning of the line N (default 1) lines up."
   (ansi-csi-apply 'previous-line n))
 
 (defun ansi-column (&optional n)
-  "Moves the cursor to column N (default 1)"
+  "Move the cursor to column N (default 1)."
   (ansi-csi-apply 'column n))
 
 (defun ansi-kill (&optional n)
@@ -228,7 +228,7 @@ If N is 0 (or missing), clear from cursor to the end of the line.
 
 If N is 1, clear from cursor to beginning of the line.
 
-If N is 2, clear entire line. Cursor position does not change."
+If N is 2, clear entire line.  Cursor position does not change."
   (ansi-csi-apply 'kill n))
 
 
